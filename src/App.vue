@@ -1,26 +1,38 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div :class="type">
+    <main>
+      <div class="wrapper">
+        <input v-model="city" @keydown.enter="getWeather" type="text" class="input-field" placeholder="Введите город">
+        <weather-info></weather-info>
+      </div>
+    </main>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { computed, ref } from "vue";
+import { useStore } from "vuex";
+import WeatherInfo from "@/components/WeatherInfo";
 
 export default {
+  setup() {
+    const store = useStore()
+
+    const city = ref('')
+    const temp = computed(() => store.getters.getWeather?.main?.temp - 273.15)
+    const type = computed(() => {
+      if (temp.value >= 15) return 'bg-warm'
+      else return 'bg-cold'
+    })
+
+    async function getWeather() {
+      await store.dispatch('loadWeather', city.value)
+      city.value = ''
+    }
+
+    return { city, getWeather, type }
+  },
+  components: { WeatherInfo },
   name: 'App',
-  components: {
-    HelloWorld
-  }
 }
 </script>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
