@@ -19,7 +19,7 @@ import WeatherInfo from "@/components/WeatherInfo.vue";
 const city = ref('')
 const weather = computed(() => store.getters.getWeather)
 const temp = computed(() => Math.round(store.getters.getWeather?.main?.temp - 273.15))
-const type = computed(() => isNaN(temp.value) ? 'bg-warm' : temp.value >= 5 ? 'bg-warm' : 'bg-cold')
+const type = computed(() => isNaN(temp.value) ? 'bg-warm' : temp.value >= 10 ? 'bg-warm' : 'bg-cold')
 
 async function loadWeather() {
 	await store.dispatch('loadWeather', city.value)
